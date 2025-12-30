@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Trading Premium | Official</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0; padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #0b0118; color: white;
+            display: flex; justify-content: center;
+        }
+        .wrapper { width: 100%; max-width: 480px; min-height: 100vh; background: #0b0118; padding-bottom: 30px; }
+        
+        /* প্রফেশনাল চার্ট ঘর */
+        .chart-box {
+            margin: 15px; padding: 12px;
+            background: #131722; border: 1px solid #2d2d44; border-radius: 12px;
+        }
+        .chart-info {
+            display: flex; justify-content: space-between;
+            font-size: 0.85rem; color: #00ffcc; margin-bottom: 10px;
+        }
+        .graph-area {
+            width: 100%; height: 110px;
+            display: flex; align-items: flex-end; gap: 3px;
+        }
+        .bar {
+            flex: 1; background: #ec008c;
+            border-radius: 2px 2px 0 0;
+            transition: height 0.8s ease;
+        }
+
+        .content { padding: 0 20px; text-align: center; }
+
+        .title-gradient {
+            background: linear-gradient(90deg, #ec008c, #00c6ff);
+            border-radius: 15px; padding: 18px;
+            margin-bottom: 15px; font-size: 1.25rem; font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .status-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #333; border-radius: 15px;
+            padding: 20px; margin-bottom: 20px;
+        }
+        .live-indicator {
+            display: inline-flex; align-items: center;
+            background: rgba(0, 255, 0, 0.1);
+            padding: 5px 12px; border-radius: 20px;
+            color: #00ff00; font-size: 0.85rem; margin-bottom: 10px;
+        }
+        .dot { height: 8px; width: 8px; background: #00ff00; border-radius: 50%; margin-right: 8px; animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0.2; } }
+
+        .action-btn {
+            background: linear-gradient(90deg, #ec008c, #00c6ff);
+            padding: 18px; border-radius: 50px;
+            display: block; text-decoration: none; color: white;
+            font-weight: bold; font-size: 1.2rem; margin-bottom: 25px;
+            box-shadow: 0 4px 20px rgba(236, 0, 140, 0.3);
+            cursor: pointer;
+        }
+
+        .stats-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .stat-item {
+            background: linear-gradient(135deg, #1e1e3f, #0b0118);
+            border: 1px solid #2d2d44; padding: 15px; border-radius: 15px;
+        }
+        .stat-item h3 { margin: 5px 0 0; font-size: 1.1rem; color: #00d4ff; }
+        .stat-item p { margin: 0; font-size: 0.75rem; opacity: 0.7; }
+
+        .contact-btn {
+            color: #00ffcc; font-weight: bold; font-size: 1.4rem;
+            display: block; margin-top: 25px; cursor: pointer;
+            text-decoration: none; border: 1px solid #00ffcc;
+            padding: 10px; border-radius: 10px; width: fit-content; margin-left: auto; margin-right: auto;
+        }
+
+        .spinner {
+            display: none;
+            width: 22px; height: 22px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <div class="chart-box">
+        <div class="chart-info">
+            <span><i class="fas fa-signal"></i> Network Activity Live</span>
+            <span id="timer">00:00:00</span>
+        </div>
+        <div class="graph-area" id="graph"></div>
+    </div>
+
+    <div class="content">
+        <div class="title-gradient">ঘরে বসে ইনকাম করুন</div>
+
+        <div class="status-box">
+            <div class="live-indicator"><span class="dot"></span> LIVE ট্রেডিং ও টাস্ক</div>
+            <div style="font-size: 1.1rem; font-weight: bold;">সরাসরি কাজ করে টাকা আয় করুন</div>
+        </div>
+
+        <p style="color: #d1d1d1; font-size: 0.95rem; line-height: 1.6; margin: 20px 0;">
+            আমাদের প্ল্যাটফর্মে প্রতিদিন লক্ষাধিক মানুষ কাজ করে পেমেন্ট নিচ্ছে। আপনিও যদি আয় করতে চান, তবে নিচের বাটন থেকে অ্যাপটি ডাউনলোড করুন।
+        </p>
+
+        <div onclick="startLoading(this)" class="action-btn" id="ctaBtn">
+            <div class="spinner" id="btnSpinner"></div>
+            <span id="btnText">🚀 অ্যাপ ডাউনলোড করুন</span>
+        </div>
+
+        <div class="stats-container">
+            <div class="stat-item">
+                <i class="fas fa-users" style="color: #ec008c;"></i>
+                <p>মোট মেম্বার</p>
+                <h3 id="totalUsers">1,24,580+</h3>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-check-circle" style="color: #00ffcc;"></i>
+                <p>আজকের পেমেন্ট</p>
+                <h3 id="todayPay">৳3,45,800</h3>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-chart-pie" style="color: #f1c40f;"></i>
+                <p>সাকসেস রেট</p>
+                <h3>99.2%</h3>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-bolt" style="color: #00d4ff;"></i>
+                <p>অনলাইন ইউজার</p>
+                <h3 id="onlineUsers">1,420 জন</h3>
+            </div>
+        </div>
+
+        <div onclick="checkReg()" class="contact-btn">যোগাযোগ করুন</div>
+        
+        <p style="font-size: 0.75rem; color: #555; margin-top: 30px;">নির্ভরযোগ্য ইনকাম প্ল্যাটফর্ম | &copy; 2025</p>
+    </div>
+</div>
+
+<script>
+    // ১. গ্রাফ অ্যানিমেশন
+    const graph = document.getElementById('graph');
+    for(let i=0; i<35; i++) {
+        let bar = document.createElement('div');
+        bar.className = 'bar';
+        bar.style.height = (Math.random() * 70 + 20) + '%';
+        graph.appendChild(bar);
+    }
+    setInterval(() => {
+        document.querySelectorAll('.bar').forEach(b => {
+            b.style.height = (Math.random() * 70 + 20) + '%';
+        });
+        document.getElementById('timer').innerText = new Date().toLocaleTimeString();
+        
+        // লাইভ ইউজার এবং পেমেন্ট সামান্য আপডেট করা যাতে রিয়েল মনে হয়
+        let currentOnline = 1420 + Math.floor(Math.random() * 50);
+        document.getElementById('onlineUsers').innerText = currentOnline.toLocaleString() + " জন";
+    }, 2000);
+
+    // ২. লোডিং এবং রিডাইরেক্ট
+    function startLoading(element) {
+        const text = document.getElementById('btnText');
+        const spinner = document.getElementById('btnSpinner');
+        text.innerText = "সার্ভারের সাথে সংযোগ হচ্ছে...";
+        spinner.style.display = "block";
+        element.style.pointerEvents = "none";
+        element.style.opacity = "0.8";
+
+        setTimeout(() => {
+            window.location.href = "https://doublyracism.com/tsvz355k?key=2692264f20de9b26342de2d291a88efd";
+        }, 3000);
+    }
+
+    // ৩. যোগাযোগ অ্যালার্ট
+    function checkReg() {
+        Swal.fire({
+            title: 'অ্যাকাউন্ট চেক',
+            text: 'যোগাযোগ করার আগে নিশ্চিত করুন আপনি অ্যাপটি ডাউনলোড করে একাউন্ট খুলেছেন।',
+            icon: 'warning',
+            confirmButtonText: 'ঠিক আছে',
+            confirmButtonColor: '#ec008c',
+            background: '#131722',
+            color: '#fff'
+        });
+    }
+</script>
+
+</body>
+</html>
